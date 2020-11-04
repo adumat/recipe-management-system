@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using RecipeManagementSystem.Data;
 using RecipeManagementSystem.Models.Db;
@@ -7,7 +9,7 @@ using Xunit.Abstractions;
 
 namespace RecipeManagementSystem.Tests
 {
-    public class BaseTest
+    public class BaseTest : IDisposable
     {
 
         protected IngredientCategory Vegetable { get; private set; }
@@ -27,8 +29,10 @@ namespace RecipeManagementSystem.Tests
         protected BaseTest(ITestOutputHelper output)
         {
             this.output = output;
+            _connection = new SqliteConnection("DataSource=:memory:");
+            _connection.Open();
             ContextOptions = new DbContextOptionsBuilder<RecipeManagementSystemDbContext>()
-                .UseSqlite("Filename=Test.db")
+                .UseSqlite(_connection)
                 .Options;
 
             Seed();
@@ -36,6 +40,7 @@ namespace RecipeManagementSystem.Tests
 
         protected DbContextOptions<RecipeManagementSystemDbContext> ContextOptions { get; }
         protected readonly ITestOutputHelper output;
+        private readonly SqliteConnection _connection;
         private void Seed()
         {
             using (var context = new RecipeManagementSystemDbContext(ContextOptions))
@@ -143,6 +148,11 @@ namespace RecipeManagementSystem.Tests
 
                 context.SaveChanges();
             }
+        }
+
+        public void Dispose()
+        {
+            _connection.Close();
         }
     }
 }

@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30611.23
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecipeManagementSystem", "RecipeManagementSystem\RecipeManagementSystem.csproj", "{9D1E1E3B-5672-4697-8AB4-B99EBF5C4FFD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecipeManagementSystem", "RecipeManagementSystem\RecipeManagementSystem.csproj", "{9D1E1E3B-5672-4697-8AB4-B99EBF5C4FFD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecipeManagementSystem.Tests", "RecipeManagementSystem.Tests\RecipeManagementSystem.Tests.csproj", "{68EF9B61-11D3-4DB2-B2BD-FEBC6F3D5F9A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{9D1E1E3B-5672-4697-8AB4-B99EBF5C4FFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D1E1E3B-5672-4697-8AB4-B99EBF5C4FFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D1E1E3B-5672-4697-8AB4-B99EBF5C4FFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68EF9B61-11D3-4DB2-B2BD-FEBC6F3D5F9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68EF9B61-11D3-4DB2-B2BD-FEBC6F3D5F9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68EF9B61-11D3-4DB2-B2BD-FEBC6F3D5F9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68EF9B61-11D3-4DB2-B2BD-FEBC6F3D5F9A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

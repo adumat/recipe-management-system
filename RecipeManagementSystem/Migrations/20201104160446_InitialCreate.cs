@@ -52,7 +52,7 @@ namespace RecipeManagementSystem.Migrations
                         column: x => x.ParentTagId,
                         principalTable: "rms_recipe_tag",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -72,7 +72,7 @@ namespace RecipeManagementSystem.Migrations
                         column: x => x.CategoryId,
                         principalTable: "rms_ingredient_category",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -81,7 +81,7 @@ namespace RecipeManagementSystem.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    RecipeId = table.Column<int>(nullable: false),
+                    RecipeId = table.Column<int>(nullable: true),
                     Description = table.Column<string>(nullable: false),
                     OrderIdx = table.Column<int>(nullable: false)
                 },

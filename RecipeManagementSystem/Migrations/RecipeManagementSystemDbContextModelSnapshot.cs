@@ -76,7 +76,7 @@ namespace RecipeManagementSystem.Migrations
 
             modelBuilder.Entity("RecipeManagementSystem.Models.Db.RecipeStep", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
@@ -87,7 +87,7 @@ namespace RecipeManagementSystem.Migrations
                     b.Property<int>("OrderIdx")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("RecipeId")
+                    b.Property<int?>("RecipeId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -123,7 +123,7 @@ namespace RecipeManagementSystem.Migrations
 
             modelBuilder.Entity("RecipeManagementSystem.Models.Db.RecipeTagMap", b =>
                 {
-                    b.Property<int>("RecipeId")
+                    b.Property<int?>("RecipeId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("RecipeTagId")
@@ -141,7 +141,7 @@ namespace RecipeManagementSystem.Migrations
                     b.Property<int>("IngredientId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("ReceiptId")
+                    b.Property<int?>("ReceiptId")
                         .HasColumnType("INTEGER");
 
                     b.Property<double>("Quantity")
@@ -162,7 +162,8 @@ namespace RecipeManagementSystem.Migrations
                 {
                     b.HasOne("RecipeManagementSystem.Models.Db.IngredientCategory", "Category")
                         .WithMany("Ingredients")
-                        .HasForeignKey("CategoryId");
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.SetNull);
                 });
 
             modelBuilder.Entity("RecipeManagementSystem.Models.Db.RecipeStep", b =>
@@ -170,15 +171,15 @@ namespace RecipeManagementSystem.Migrations
                     b.HasOne("RecipeManagementSystem.Models.Db.Recipe", "Recipe")
                         .WithMany("PreparationSteps")
                         .HasForeignKey("RecipeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("RecipeManagementSystem.Models.Db.RecipeTag", b =>
                 {
                     b.HasOne("RecipeManagementSystem.Models.Db.RecipeTag", "ParentTag")
                         .WithMany("ChildrenTag")
-                        .HasForeignKey("ParentTagId");
+                        .HasForeignKey("ParentTagId")
+                        .OnDelete(DeleteBehavior.SetNull);
                 });
 
             modelBuilder.Entity("RecipeManagementSystem.Models.Db.RecipeTagMap", b =>

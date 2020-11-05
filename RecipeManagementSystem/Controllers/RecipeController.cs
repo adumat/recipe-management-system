@@ -58,29 +58,23 @@ namespace RecipeManagementSystem.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> PutRecipe(int id, RecipeDto recipeDto)
         {
-            if (id != recipeDto.Id)
+            if (id != recipeDto.Id && !RecipeExists(id))
             {
                 return BadRequest();
             }
+            if (!RecipeExists(id))
+            {
+                return NotFound();
+            }
+            var currentRecipe = await _context.Recipes.Include(r => r.Tags)
+                .Include(r => r.PreparationSteps)
+                .Include(r => r.UseOfIngredients)
+                .SingleOrDefaultAsync(r => r.Id == id);
             
-            var recipe = _mapper.Map<Recipe>(recipeDto);
+            var recipe = _mapper.Map<RecipeDto, Recipe>(recipeDto, currentRecipe);
             _context.Entry(recipe).State = EntityState.Modified;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!RecipeExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
@@ -110,7 +104,10 @@ namespace RecipeManagementSystem.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<RecipeDto>> DeleteRecipe(int id)
         {
-            var recipe = await _context.Recipes.FindAsync(id);
+            var recipe = await _context.Recipes.Include(r => r.Tags)
+                .Include(r => r.PreparationSteps)
+                .Include(r => r.UseOfIngredients)
+                .SingleOrDefaultAsync(r => r.Id == id);
             if (recipe == null)
             {
                 return NotFound();

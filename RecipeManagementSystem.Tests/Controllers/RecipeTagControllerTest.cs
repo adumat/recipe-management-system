@@ -143,8 +143,7 @@ namespace RecipeManagementSystem.Tests
                 };
                 var result = await controller.PutRecipeTag(dto.Id.Value, dto);
 
-                var actionResult = Assert.IsType<ActionResult<RecipeTagDto>>(result);
-                Assert.IsType<BadRequestResult>(actionResult.Result);
+                Assert.IsType<BadRequestResult>(result);
             }
         }
 

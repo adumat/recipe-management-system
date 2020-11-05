@@ -61,25 +61,23 @@ namespace RecipeManagementSystem.Controllers
             {
                 return BadRequest();
             }
+            if (!RecipeTagExists(id))
+            {
+                return NotFound();
+            }
+            if (recipeTagDto.ParentTagId != null)
+            {
+                if (!await _context.RecipeTags.AnyAsync(rt => rt.Id == recipeTagDto.ParentTagId.Value))
+                {
+                    return BadRequest();
+                }
+            }
 
-            var recipeTag = _mapper.Map<RecipeTag>(recipeTagDto);
+            var currentRecipeTag = await _context.RecipeTags.FindAsync(id);
+            var recipeTag = _mapper.Map<RecipeTagDto, RecipeTag>(recipeTagDto, currentRecipeTag);
             _context.Entry(recipeTag).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!RecipeTagExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
@@ -94,6 +92,13 @@ namespace RecipeManagementSystem.Controllers
             if (recipeTagDto.Id != null)
             {
                 return BadRequest();
+            }
+            if (recipeTagDto.ParentTagId != null)
+            {
+                if (!await _context.RecipeTags.AnyAsync(rt => rt.Id == recipeTagDto.ParentTagId.Value))
+                {
+                    return BadRequest();
+                }
             }
 
             var recipeTag = _mapper.Map<RecipeTag>(recipeTagDto);

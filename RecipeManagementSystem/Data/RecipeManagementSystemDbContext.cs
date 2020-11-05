@@ -14,6 +14,9 @@ namespace RecipeManagementSystem.Data
         {
         }
 
+        public RecipeManagementSystemDbContext() : base()
+        {}
+
         public DbSet<Recipe> Recipes { get; set; }
         public DbSet<Ingredient> Ingredients { get; set; }
         public DbSet<RecipeTag> RecipeTags { get; set; }
@@ -33,6 +36,7 @@ namespace RecipeManagementSystem.Data
                     .IsRequired();
 
                 entity.Property(p => p.Id)
+                    .IsRequired()
                     .ValueGeneratedOnAdd();
             });
 
@@ -42,6 +46,7 @@ namespace RecipeManagementSystem.Data
                     .HasKey(t => t.Id);
                 
                 entity.Property(p => p.Id)
+                    .IsRequired()
                     .ValueGeneratedOnAdd();
                 
                 entity.Property(p => p.Name)
@@ -53,7 +58,7 @@ namespace RecipeManagementSystem.Data
                 entity.HasOne(t => t.ParentTag) // self reference for hierarchical structure
                     .WithMany(t => t.ChildrenTag)
                     .HasForeignKey(t => t.ParentTagId)
-                    .OnDelete(DeleteBehavior.ClientSetNull);
+                    .OnDelete(DeleteBehavior.SetNull);
             });
             modelBuilder.Entity<Ingredient>(entity =>
             {
@@ -61,6 +66,7 @@ namespace RecipeManagementSystem.Data
                     .HasKey(i => i.Id);
 
                 entity.Property(p => p.Id)
+                    .IsRequired()
                     .ValueGeneratedOnAdd();
                 
                 entity.Property(p => p.Name)
@@ -69,7 +75,7 @@ namespace RecipeManagementSystem.Data
                 entity.HasOne(i => i.Category)
                     .WithMany(ic => ic.Ingredients)
                     .HasForeignKey(i => i.CategoryId)
-                    .OnDelete(DeleteBehavior.ClientSetNull);
+                    .OnDelete(DeleteBehavior.SetNull);
             });
             modelBuilder.Entity<Recipe>(entity =>
             {
@@ -77,6 +83,7 @@ namespace RecipeManagementSystem.Data
                     .HasKey(r => r.Id);
                 
                 entity.Property(p => p.Id)
+                    .IsRequired()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(p => p.Title)
@@ -92,6 +99,7 @@ namespace RecipeManagementSystem.Data
                     .HasKey(rs => rs.Id);
                 
                 entity.Property(p => p.Id)
+                    .IsRequired()
                     .ValueGeneratedOnAdd();
                 
                 entity.Property(p => p.Description)
@@ -102,7 +110,6 @@ namespace RecipeManagementSystem.Data
                 entity.HasOne(rs => rs.Recipe)
                     .WithMany(r => r.PreparationSteps)
                     .HasForeignKey(rs => rs.RecipeId)
-                    .IsRequired()
                     .OnDelete(DeleteBehavior.Cascade);
             });
             modelBuilder.Entity<UseOfIngredient>(entity =>
@@ -123,13 +130,11 @@ namespace RecipeManagementSystem.Data
                 entity.HasOne(ui => ui.Ingredient)
                     .WithMany(i => i.UsedBy)
                     .HasForeignKey(ui => ui.IngredientId)
-                    .IsRequired()
                     .OnDelete(DeleteBehavior.Cascade);
                 
                 entity.HasOne(ui => ui.Recipe)
                     .WithMany(i => i.UseOfIngredients)
                     .HasForeignKey(ui => ui.ReceiptId)
-                    .IsRequired()
                     .OnDelete(DeleteBehavior.Cascade);
             });
             modelBuilder.Entity<RecipeTagMap>(entity =>
@@ -140,13 +145,11 @@ namespace RecipeManagementSystem.Data
                 entity.HasOne(rtm => rtm.Tag)
                     .WithMany(t => t.Recipes)
                     .HasForeignKey(rtm => rtm.RecipeTagId)
-                    .IsRequired()
                     .OnDelete(DeleteBehavior.Cascade);
                 
                 entity.HasOne(rtm => rtm.Recipe)
                     .WithMany(r => r.Tags)
                     .HasForeignKey(rtm => rtm.RecipeId)
-                    .IsRequired()
                     .OnDelete(DeleteBehavior.Cascade);
             });
         }

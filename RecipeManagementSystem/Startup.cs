@@ -26,9 +26,9 @@ namespace RecipeManagementSystem
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAutoMapper(cfg => {}, typeof(Startup));
             services.AddDbContext<RecipeManagementSystemDbContext>(builder =>
                 builder.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddAutoMapper(cfg => { }, typeof(Startup));
             
             services.AddControllersWithViews();
 

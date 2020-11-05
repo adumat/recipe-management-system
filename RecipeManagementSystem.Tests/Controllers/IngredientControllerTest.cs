@@ -137,7 +137,7 @@ namespace RecipeManagementSystem.Tests
                 dto.CategoryId = 1000;
                 var result = await controller.PutIngredient(dto.Id.Value, dto);
 
-                Assert.IsType<NotFoundResult>(result);
+                Assert.IsType<BadRequestResult>(result);
             }
         }
 

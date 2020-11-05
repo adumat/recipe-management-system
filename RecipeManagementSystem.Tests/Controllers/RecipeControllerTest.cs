@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using RecipeManagementSystem.Controllers;
 using RecipeManagementSystem.Data;
@@ -135,13 +136,19 @@ namespace RecipeManagementSystem.Tests
                     Unit = UnitOfMeasure.SPOON
                 });
                 dto.PreparationSteps.Add(new RecipeStepDto {
-                    Description = "great classic: chickenmisu"
+                    Description = "great classic: chickenmisu",
+                    OrderIdx = 2
                 });
                 var result = await controller.PutRecipe(dto.Id.Value, dto);
 
                 Assert.IsType<NoContentResult>(result);
                 var newEntity = await controller.GetRecipe(dto.Id.Value);
-                Assert.Equal(dto, newEntity.Value);
+                var newDto = newEntity.Value as RecipeDto;
+                //for check if is equal, i need to copy back the newest idx of preparation step
+                var newestPS = newDto.PreparationSteps.Single(newPSDto => newPSDto.OrderIdx == 2);
+                var oldestPS = dto.PreparationSteps.Single(oldPSDto => oldPSDto.OrderIdx == 2);
+                oldestPS.Id = newestPS.Id;
+                Assert.Equal(dto, newDto);
             }
         }
 

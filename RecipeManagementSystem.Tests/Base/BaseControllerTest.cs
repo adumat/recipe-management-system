@@ -9,9 +9,7 @@ namespace RecipeManagementSystem.Tests
         public BaseControllerTest(ITestOutputHelper output) : base(output)
         {
             mapper = new MapperConfiguration(cfg => {
-                cfg.AddMaps(new [] {
-                    typeof(MappingProfile)
-                });
+                cfg.AddMaps(new [] { typeof(MappingProfile) });
             }).CreateMapper();
         }
 

@@ -61,25 +61,16 @@ namespace RecipeManagementSystem.Controllers
             {
                 return BadRequest();
             }
+            if (!IngredientCategoryExists(id))
+            {
+                return NotFound();
+            }
             
-            var ingredientCategory = _mapper.Map<IngredientCategory>(ingredientCategoryDto);
+            var currentIngredientCategory = await _context.IngredientCategories.FindAsync(id);
+            var ingredientCategory = _mapper.Map<IngredientCategoryDto, IngredientCategory>(ingredientCategoryDto, currentIngredientCategory);
             _context.Entry(ingredientCategory).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!IngredientCategoryExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }

@@ -60,25 +60,23 @@ namespace RecipeManagementSystem.Controllers
             {
                 return BadRequest();
             }
+            if (!IngredientExists(id))
+            {
+                return NotFound();
+            }
+            if (ingredientDto.CategoryId != null)
+            {
+                if (!await _context.IngredientCategories.AnyAsync(ic => ic.Id == ingredientDto.CategoryId.Value))
+                {
+                    return BadRequest();
+                }
+            }
 
-            var ingredient = _mapper.Map<Ingredient>(ingredientDto);
+            var currentIngredient = await _context.Ingredients.FindAsync(id);
+            var ingredient = _mapper.Map<IngredientDto, Ingredient>(ingredientDto, currentIngredient);
             _context.Entry(ingredient).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!IngredientExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
@@ -93,6 +91,13 @@ namespace RecipeManagementSystem.Controllers
             if (ingredientDto.Id != null)
             {
                 return BadRequest();
+            }
+            if (ingredientDto.CategoryId != null)
+            {
+                if (!await _context.IngredientCategories.AnyAsync(ic => ic.Id == ingredientDto.CategoryId.Value))
+                {
+                    return BadRequest();
+                }
             }
 
             var ingredient = _mapper.Map<Ingredient>(ingredientDto);

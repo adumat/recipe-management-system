@@ -64,6 +64,10 @@ namespace RecipeManagementSystem.Controllers
             {
                 return NotFound();
             }
+            if (ingredientDto.CategoryId == -1)
+            {
+                ingredientDto.CategoryId = null;
+            }
             if (ingredientDto.CategoryId != null)
             {
                 if (!await _context.IngredientCategories.AnyAsync(ic => ic.Id == ingredientDto.CategoryId.Value))
@@ -91,6 +95,10 @@ namespace RecipeManagementSystem.Controllers
             if (ingredientDto.Id != null)
             {
                 return BadRequest();
+            }
+            if (ingredientDto.CategoryId == -1)
+            {
+                ingredientDto.CategoryId = null;
             }
             if (ingredientDto.CategoryId != null)
             {

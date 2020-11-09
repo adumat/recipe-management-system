@@ -1,29 +1,48 @@
-import { applyMiddleware, combineReducers, compose, createStore } from 'redux';
-import thunk from 'redux-thunk';
-import { connectRouter, routerMiddleware } from 'connected-react-router';
-import { History } from 'history';
-import { ApplicationState, reducers } from './';
+/**
+ * Create the store with dynamic reducers
+ */
 
-export default function configureStore(history: History, initialState?: ApplicationState) {
-    const middleware = [
-        thunk,
-        routerMiddleware(history)
-    ];
+import {
+  configureStore,
+  getDefaultMiddleware,
+  Middleware,
+} from '@reduxjs/toolkit';
+import { createInjectorsEnhancer, forceReducerReload } from 'redux-injectors';
+import createSagaMiddleware from 'redux-saga';
 
-    const rootReducer = combineReducers({
-        ...reducers,
-        router: connectRouter(history)
+import { createReducer } from './reducers';
+
+export function configureAppStore() {
+  const reduxSagaMonitorOptions = {};
+  const sagaMiddleware = createSagaMiddleware(reduxSagaMonitorOptions);
+  const { run: runSaga } = sagaMiddleware;
+
+  // Create the store with two middlewares
+  // 1. sagaMiddleware: Makes redux-sagas work
+  // 2. routerMiddleware: Syncs the location/URL path to the state
+  const middlewares = [sagaMiddleware] as Middleware[];
+
+  const enhancers = [
+    createInjectorsEnhancer({
+      createReducer,
+      runSaga,
+    }),
+  ];
+
+  const store = configureStore({
+    reducer: createReducer(),
+    middleware: [...getDefaultMiddleware(), ...middlewares],
+    devTools: process.env.NODE_ENV !== 'production',
+    enhancers,
+  });
+
+  // Make reducers hot reloadable, see http://mxs.is/googmo
+  /* istanbul ignore next */
+  if (module.hot) {
+    module.hot.accept('./reducers', () => {
+      forceReducerReload(store);
     });
+  }
 
-    const enhancers = [];
-    const windowIfDefined = typeof window === 'undefined' ? null : window as any;
-    if (windowIfDefined && windowIfDefined.__REDUX_DEVTOOLS_EXTENSION__) {
-        enhancers.push(windowIfDefined.__REDUX_DEVTOOLS_EXTENSION__());
-    }
-
-    return createStore(
-        rootReducer,
-        initialState,
-        compose(applyMiddleware(...middleware), ...enhancers)
-    );
+  return store;
 }

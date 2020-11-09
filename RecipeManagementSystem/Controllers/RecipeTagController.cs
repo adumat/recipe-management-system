@@ -65,6 +65,10 @@ namespace RecipeManagementSystem.Controllers
             {
                 return NotFound();
             }
+            if (recipeTagDto.ParentTagId == -1)
+            {
+                recipeTagDto.ParentTagId = null;
+            }
             if (recipeTagDto.ParentTagId != null)
             {
                 if (!await _context.RecipeTags.AnyAsync(rt => rt.Id == recipeTagDto.ParentTagId.Value))
@@ -92,6 +96,10 @@ namespace RecipeManagementSystem.Controllers
             if (recipeTagDto.Id != null)
             {
                 return BadRequest();
+            }
+            if (recipeTagDto.ParentTagId == -1)
+            {
+                recipeTagDto.ParentTagId = null;
             }
             if (recipeTagDto.ParentTagId != null)
             {

@@ -1,27 +1,62 @@
-import 'bootstrap/dist/css/bootstrap.css';
+/**
+ * index.tsx
+ *
+ * This is the entry file for the application, only setup and boilerplate
+ * code.
+ */
+
+import 'react-app-polyfill/ie11';
+import 'react-app-polyfill/stable';
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { ConnectedRouter } from 'connected-react-router';
-import { createBrowserHistory } from 'history';
-import configureStore from './store/configureStore';
-import App from './App';
-import registerServiceWorker from './registerServiceWorker';
+import * as serviceWorker from 'serviceWorker';
+import 'sanitize.css/sanitize.css';
 
-// Create browser history to use in the Redux store
-const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href') as string;
-const history = createBrowserHistory({ basename: baseUrl });
+// Import root app
+import { App } from 'app';
 
-// Get the application-wide store instance, prepopulating with state from the server where available.
-const store = configureStore(history);
+import { HelmetProvider } from 'react-helmet-async';
 
-ReactDOM.render(
-    <Provider store={store}>
-        <ConnectedRouter history={history}>
-            <App />
-        </ConnectedRouter>
-    </Provider>,
-    document.getElementById('root'));
+import { configureAppStore } from 'store/configureStore';
 
-registerServiceWorker();
+// Initialize languages
+import './locales/i18n';
+
+const store = configureAppStore();
+const MOUNT_NODE = document.getElementById('root') as HTMLElement;
+
+interface Props {
+  Component: typeof App;
+}
+const ConnectedApp = ({ Component }: Props) => (
+  <Provider store={store}>
+    <HelmetProvider>
+      <React.StrictMode>
+        <Component />
+      </React.StrictMode>
+    </HelmetProvider>
+  </Provider>
+);
+const render = (Component: typeof App) => {
+  ReactDOM.render(<ConnectedApp Component={Component} />, MOUNT_NODE);
+};
+
+if (module.hot) {
+  // Hot reloadable translation json files and app
+  // modules.hot.accept does not accept dynamic dependencies,
+  // have to be constants at compile-time
+  module.hot.accept(['./app', './locales/i18n'], () => {
+    ReactDOM.unmountComponentAtNode(MOUNT_NODE);
+    const App = require('./app').App;
+    render(App);
+  });
+}
+
+render(App);
+
+// If you want your app to work offline and load faster, you can change
+// unregister() to register() below. Note this comes with some pitfalls.
+// Learn more about service workers: https://bit.ly/CRA-PWA
+serviceWorker.unregister();

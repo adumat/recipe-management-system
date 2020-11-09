@@ -30,7 +30,8 @@ namespace RecipeManagementSystem
                 builder.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
             services.AddAutoMapper(cfg => { }, typeof(Startup));
             
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .AddJsonOptions(opts => opts.JsonSerializerOptions.PropertyNamingPolicy = null);
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

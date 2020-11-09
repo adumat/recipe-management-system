@@ -113,7 +113,7 @@ namespace RecipeManagementSystem.Controllers
             _context.RecipeTags.Add(recipeTag);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetRecipeTag", new { id = recipeTag.Id }, recipeTag);
+            return CreatedAtAction("GetRecipeTag", new { id = recipeTag.Id }, _mapper.Map<RecipeTagDto>(recipeTag));
         }
 
         // DELETE: api/RecipeTag/5

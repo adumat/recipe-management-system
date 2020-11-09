@@ -95,7 +95,7 @@ namespace RecipeManagementSystem.Controllers
             _context.Recipes.Add(recipe);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetRecipe), new { id = recipe.Id }, recipe);
+            return CreatedAtAction(nameof(GetRecipe), new { id = recipe.Id }, _mapper.Map<RecipeDto>(recipe));
         }
 
         // DELETE: api/Recipe/5

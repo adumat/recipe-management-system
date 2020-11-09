@@ -112,7 +112,7 @@ namespace RecipeManagementSystem.Controllers
             _context.Ingredients.Add(ingredient);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetIngredient", new { id = ingredient.Id }, ingredient);
+            return CreatedAtAction("GetIngredient", new { id = ingredient.Id }, _mapper.Map<IngredientDto>(ingredient));
         }
 
         // DELETE: api/Ingredient/5
